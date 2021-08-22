@@ -33,10 +33,14 @@ impl EventHandler for Handler {
                 let copy = msg.clone();
                 match msg.referenced_message {
                     Some(ref_msg) => {
-                        copy.reply(&ctx.http, translate(&ref_msg.content)).await;
+                        if let Err(why) = copy.reply(&ctx.http, translate(&ref_msg.content)).await {
+                            eprintln!("{:?}", why);
+                        }
                     },
                     None => {
-                        copy.reply(&ctx.http, "Da is kei Text du Kaschber.").await;
+                        if let Err(why) = copy.reply(&ctx.http, "Da is kei Text du Kaschber.").await {
+                            eprintln!("{:?}", why)
+                        }
                     }
                 }
         }
