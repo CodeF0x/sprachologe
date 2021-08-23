@@ -1,4 +1,5 @@
-use std::env;
+mod util;
+
 use serenity::{
     async_trait,
     model::{
@@ -108,14 +109,14 @@ fn get_text_from_command_and_translate(command: &ApplicationCommandInteraction) 
 
 #[tokio::main]
 async fn main() {
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let credentials = util::get_credentials()
+        .expect("Could not read credentials from file.");
 
-    let application_id: u64 = env::var("APPLICATION_ID")
-        .expect("Expected an application id in the environment")
+    let application_id: u64 = credentials.1
         .parse()
         .expect("application id is not a valid id");
 
-    let mut client = Client::builder(token)
+    let mut client = Client::builder(credentials.0)
         .event_handler(Handler)
         .application_id(application_id)
         .await
